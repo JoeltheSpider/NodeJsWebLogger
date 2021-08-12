@@ -30,23 +30,21 @@
 		function logMood(element) {
 			var dt = new Date();
 			var utcDate = dt.toUTCString();
-			$.getJSON("https://api.ipify.org?format=json", function(data) { $("#temp").html(data.ip);}).then(response => 
+			var ip;
+			$.getJSON("https://api.ipify.org?format=json", function(data) { ip = data.ip; }).then(response => 
 			{
-				var ip = document.getElementById("temp").innerText;
-				document.getElementById("temp").innerHTML = "";
-				var log = '{"message": "User is feeling ' + element.id + '", "time": "'+utcDate+'", "ip":' + ip + '}';
+				var log = '{"message": "User is feeling ' + element.id + '", "time": "'+utcDate+'", "ip":' + ip;
 				
 				$.ajax({
 					url: "http://localhost:8080",
 					data: log,
 					type: "POST",
-					dataType: "json",
+					dataType: "data",
 					success: function(data){
 						console.log("Over");
 					},
 					error: function(err){
 						console.log(err);
-						console.log("Error");
 					}
 				});
 				document.getElementById("display").innerHTML = document.getElementById("display").innerHTML + '</br>' + log;
@@ -65,5 +63,4 @@
 	<p>Displaying logs:</p></br>
 	<span class="log" id="display">
 	</span>
-	<span id="temp"></span>
 </body>

@@ -1,22 +1,37 @@
-var http = require('http');
-var fs = require('fs');
+//var http = require('http');
+const fs = require('fs');
+const express = require('express');
+const sessions = require('express-session');
+const app = express();
+const PORT = 8080;
 
-http.createServer(function (req, res) {
-  res.writeHead(200, {'Content-Type': 'text/html'});
-  if (req.method == "POST"){
-    var body = "";
-    req.on('data', function (data) {
-      body += data;
-      fs.appendFile('logs.log', body+"\n", err => {
-        if (err)
-          console.log("Err");
-      });
-    });
-    res.write("Appending contents to file");
-    res.end();
-  }
-  else{
-    var page = fs.createReadStream('page.html','utf-8');
-    page.pipe(res); 
-  }
-}).listen(8080);
+app.use(sessions({
+  secret: "huskyhusky",
+  saveUninitialized:true,
+  resave: false
+}));
+
+// parse message as json
+app.use(express.urlencoded({ extended: true }));
+//default dir
+app.use(express.static(__dirname));
+
+// process post req
+app.post('/',(req,res) => {
+  session=req.session;
+  var body = "";
+  for (data in req.body)
+    body = data + ', "session":"'+session.id+'"}\n';
+  fs.appendFile('logs.log', body, err => {
+      if (err)
+        console.log("Error: "+err);
+  });
+  res.sendFile('page.html',{root:__dirname})
+});
+
+// log collection page
+app.get('/',(req,res) => {
+  res.sendFile('page.html',{root:__dirname});
+});
+
+app.listen(PORT, () => console.log(`Server Running at http://localhost:${PORT}`));
