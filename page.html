@@ -1,0 +1,69 @@
+<head>
+	<style>
+		body {
+		background-color: rgb(108, 201, 108);
+		}
+
+		h1 {
+		color: olive;
+		font-family: Consolas;
+		font-weight: bold;
+		}
+		p {
+		color: darkgreen;
+		font-size: 120%;
+		font-weight: bold;
+		}
+
+		.log {
+			color: grey;
+		}
+		button {
+			color: white;
+			background-color: black;
+		}
+	</style>
+	<script src=
+	"https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js">
+	</script>
+	<script>
+		function logMood(element) {
+			var dt = new Date();
+			var utcDate = dt.toUTCString();
+			$.getJSON("https://api.ipify.org?format=json", function(data) { $("#temp").html(data.ip);}).then(response => 
+			{
+				var ip = document.getElementById("temp").innerText;
+				document.getElementById("temp").innerHTML = "";
+				var log = '{"message": "User is feeling ' + element.id + '", "time": "'+utcDate+'", "ip":' + ip + '}';
+				
+				$.ajax({
+					url: "http://localhost:8080",
+					data: log,
+					type: "POST",
+					dataType: "json",
+					success: function(data){
+						console.log("Over");
+					},
+					error: function(err){
+						console.log(err);
+						console.log("Error");
+					}
+				});
+				document.getElementById("display").innerHTML = document.getElementById("display").innerHTML + '</br>' + log;
+			});
+		}
+	</script>
+</head>
+<body>
+	<h1>How you doing?</h1>
+	<p>Click any one of the following buttons to record your mood</p>
+	<button type="button" onclick="logMood(this)" id="happy"> Feeling happy </button>
+	<button type="button" onclick="logMood(this)" id="sad"> Feeling sad </button>
+	<button type="button" onclick="logMood(this)" id="bored"> Feeling bored </button>
+	<button type="button" onclick="logMood(this)" id="excited"> Feeling excited </button>
+	</br>
+	<p>Displaying logs:</p></br>
+	<span class="log" id="display">
+	</span>
+	<span id="temp"></span>
+</body>
