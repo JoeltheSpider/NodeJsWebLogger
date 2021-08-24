@@ -30,10 +30,13 @@
 		function logMood(element) {
 			var dt = new Date();
 			var utcDate = dt.toUTCString();
-			var ip;
-			$.getJSON("https://api.ipify.org?format=json", function(data) { ip = data.ip; }).then(response => 
+			var data;
+			$.getJSON("http://www.geoplugin.net/json.gp", function(_data) { data = _data; }).then(response => 
 			{
-				var log = '{"message": "User is feeling ' + element.id + '", "time": "'+utcDate+'", "ip":' + ip;
+				var ip = data.geoplugin_request;
+				var country = data.geoplugin_countryName;
+				var log = '{"message": "User is feeling ' + element.id + '", "time": "'+utcDate+'", "ip":"' + ip +
+				'", "country": "'+country + '", ';
 				
 				$.ajax({
 					url: "http://localhost:8080",

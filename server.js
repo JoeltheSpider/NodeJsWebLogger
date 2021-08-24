@@ -21,7 +21,7 @@ app.post('/',(req,res) => {
   session=req.session;
   var body = "";
   for (data in req.body)
-    body = data + ', "session":"'+session.id+'"}\n';
+    body = data + '"session":"'+session.id+'"}\n';
   fs.appendFile('logs.log', body, err => {
       if (err)
         console.log("Error: "+err);
